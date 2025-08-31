@@ -141,7 +141,7 @@ const GOOGLE_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx1NO
 
 // --- VALIDATION HELPERS ---
 const validateDob = (dobString: string): { isValid: boolean; isAdult: boolean; error?: string } => {
-  const match = dobString.match(/^(\d{1,2})[\\/|-](\d{1,2})[\\/|-](\d{4})$/);
+  const match = dobString.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
   if (!match) {
     return { isValid: false, isAdult: false, error: "Định dạng ngày sinh không hợp lệ. Vui lòng nhập theo dạng DD/MM/YYYY (ví dụ: 25/12/1998)." };
   }
