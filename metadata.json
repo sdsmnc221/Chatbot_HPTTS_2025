@@ -1,0 +1,6 @@
+{
+  "name": "Chatbot Tư Vấn Tuyển Sinh HPTTS ver 2",
+  "description": "Một chatbot tương tác sử dụng Gemini API để cung cấp thông tin và hỗ trợ về quy trình tuyển sinh đào tạo nghề tại Trung tâm đào tạo HPTTS.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
