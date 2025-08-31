@@ -241,7 +241,7 @@ const getHistoryForAI = (allMessages: ChatMessage[]): Content[] => {
     return allMessages.map(msg => {
         let textForModel = msg.text;
         if (msg.sender === Sender.BOT) {
-            const jsonBlockRegex = /(?:```(?:json)?\s*\n?)?({[\s\S]+?})(?:\s*\n?```)?\s*$/;
+            const jsonBlockRegex = /({[^}]*})/;
             const match = msg.text.match(jsonBlockRegex);
             if (match) {
                 try {
@@ -426,7 +426,7 @@ function App() {
         } else {
             botResponseText = initialResponse.text;
         }
-        const jsonBlockRegex = /(?:```(?:json)?\s*\n?)?({[\s\S]+?})(?:\s*\n?```)?\s*$/;
+        const jsonBlockRegex = /({[^}]*})/;
         const match = botResponseText.match(jsonBlockRegex);
         let finalMessage = botResponseText;
         if (match) {
