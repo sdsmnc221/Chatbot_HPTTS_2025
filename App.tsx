@@ -426,12 +426,15 @@ function App() {
         } else {
             botResponseText = initialResponse.text;
         }
-        const jsonBlockRegex = /({[^}]*})/;
+         // FIXED: Safari-compatible regex that handles both ```json{...}``` and plain {...} formats
+        const jsonBlockRegex = /```(?:json)?\s*\n?({[\s\S]+?})\s*\n?```\s*$|({[\s\S]+?})\s*$/;
         const match = botResponseText.match(jsonBlockRegex);
         let finalMessage = botResponseText;
         if (match) {
             try {
-                const parsed = JSON.parse(match[1]);
+                // Use match[1] if it exists (code block format), otherwise use match[2] (plain JSON)
+                const jsonString = match[1] || match[2];
+                const parsed = JSON.parse(jsonString);
                 if (parsed.action === 'show_course_list') {
                     const { filter } = parsed;
                     let filteredCourseEntries = Object.entries(courseList);
@@ -443,7 +446,8 @@ function App() {
                         const keyword = filter.keyword.toLowerCase().trim();
                         filteredCourseEntries = filteredCourseEntries.filter(([id, course]) => id.toLowerCase().includes(keyword) || course.name.toLowerCase().includes(keyword));
                     }
-                    const jsonStartIndex = botResponseText.lastIndexOf(match[0]);
+                    const matchedText = match[0];
+                    const jsonStartIndex = botResponseText.lastIndexOf(matchedText);
                     const introductoryText = botResponseText.substring(0, jsonStartIndex).trim();
                     if (filteredCourseEntries.length > 0) {
                         const carouselItems: CarouselItem[] = filteredCourseEntries.map(([id, course]) => {
@@ -465,7 +469,7 @@ function App() {
                     }
                 }
             } catch (e) { /* Not a valid JSON command, treat as plain text */ }
-        }
+          }
         addMessage(Sender.BOT, finalMessage);
     } catch (error) {
         console.error("Lỗi gọi Gemini API:", error);
