@@ -349,7 +349,7 @@ function App() {
     const lowerCaseText = text.toLowerCase().trim();
     
     // Regex này được tinh chỉnh để chỉ bắt các câu hỏi chung về "nhóm" khóa học.
-    const categoryQueryRegex = /^(cho\s+tôi\s+xem\s+)?(các|những)\s+nhóm\s+(khóa|khoá)\s+học|có\s+(những\s+)?(nhóm\s+khóa|khoá)\s+học\s+nào/i;
+   const categoryQueryRegex = /(các|những)\s+nhóm\s+(khóa|khoá)\s+học|(nhóm\s+khóa|khoá)\s+học\s+nào/i;
     
     if (categoryQueryRegex.test(lowerCaseText)) {
         // Sử dụng văn bản từ screenshot để phản hồi nhanh và nhất quán.
@@ -367,7 +367,7 @@ function App() {
         return true;
     }
 
-    const registrationQueryRegex = /^(tư\s+vấn\s+)?(đăng\s+ký|register|ghi\s+danh|thủ\s+tục)/i;
+    const registrationQueryRegex = /(đăng\s+ký|register|ghi\s+danh|thủ\s+tục)/i;
     if (registrationQueryRegex.test(lowerCaseText)) {
         const introText = `Để đăng ký, bạn có hai lựa chọn ạ:\n\n1.  **Đăng ký nhanh qua Chatbot (Khuyên dùng):** Tôi sẽ hỏi bạn một vài thông tin cơ bản và giúp bạn gửi thông tin đăng ký trực tiếp đến phòng tuyển sinh. Nếu chưa có đủ hồ sơ, bạn nên chọn cách này.\n\n2.  **Điền Form Online:**\n    *   **Lưu ý quan trọng:** Để hoàn tất form, bạn cần chuẩn bị sẵn các bản scan hoặc ảnh chụp của: **CCCD, Giấy khám sức khỏe, và Sơ yếu lý lịch**.\n    *   Nếu đã có đủ giấy tờ, bạn hãy chọn form tương ứng bên dưới.`;
         const buttons: QuickReplyButton[] = [
@@ -426,15 +426,12 @@ function App() {
         } else {
             botResponseText = initialResponse.text;
         }
-         // FIXED: Safari-compatible regex that handles both ```json{...}``` and plain {...} formats
-        const jsonBlockRegex = /```(?:json)?\s*\n?({[\s\S]+?})\s*\n?```\s*$|({[\s\S]+?})\s*$/;
+        const jsonBlockRegex = /({[^}]*})/;
         const match = botResponseText.match(jsonBlockRegex);
         let finalMessage = botResponseText;
         if (match) {
             try {
-                // Use match[1] if it exists (code block format), otherwise use match[2] (plain JSON)
-                const jsonString = match[1] || match[2];
-                const parsed = JSON.parse(jsonString);
+                const parsed = JSON.parse(match[1]);
                 if (parsed.action === 'show_course_list') {
                     const { filter } = parsed;
                     let filteredCourseEntries = Object.entries(courseList);
@@ -446,8 +443,7 @@ function App() {
                         const keyword = filter.keyword.toLowerCase().trim();
                         filteredCourseEntries = filteredCourseEntries.filter(([id, course]) => id.toLowerCase().includes(keyword) || course.name.toLowerCase().includes(keyword));
                     }
-                    const matchedText = match[0];
-                    const jsonStartIndex = botResponseText.lastIndexOf(matchedText);
+                    const jsonStartIndex = botResponseText.lastIndexOf(match[0]);
                     const introductoryText = botResponseText.substring(0, jsonStartIndex).trim();
                     if (filteredCourseEntries.length > 0) {
                         const carouselItems: CarouselItem[] = filteredCourseEntries.map(([id, course]) => {
@@ -469,7 +465,7 @@ function App() {
                     }
                 }
             } catch (e) { /* Not a valid JSON command, treat as plain text */ }
-          }
+        }
         addMessage(Sender.BOT, finalMessage);
     } catch (error) {
         console.error("Lỗi gọi Gemini API:", error);

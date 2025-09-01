@@ -71,7 +71,7 @@ export const ChatMessageItem: React.FC<ChatMessageItemProps> = ({ message, onAct
   let richContent: RichContent | null = null;
   
   if (message.sender === Sender.BOT) {
-    const jsonBlockRegex = /(?:```(?:json)?\s*\n?)?({[\s\S]+?})(?:\s*\n?```)?\s*$/;
+    const jsonBlockRegex = /({[^{}]*"type"[^{}]*(?:{[^}]*}[^{}]*)*})\s*$/;
     const match = message.text.match(jsonBlockRegex);
     
     if (match) {
