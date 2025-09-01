@@ -349,7 +349,7 @@ function App() {
     const lowerCaseText = text.toLowerCase().trim();
     
     // Regex này được tinh chỉnh để chỉ bắt các câu hỏi chung về "nhóm" khóa học.
-    const categoryQueryRegex = /^(cho\s+tôi\s+xem\s+)?(các|những)\s+nhóm\s+(khóa|khoá)\s+học|có\s+(những\s+)?(nhóm\s+khóa|khoá)\s+học\s+nào/i;
+   const categoryQueryRegex = /(các|những)\s+nhóm\s+(khóa|khoá)\s+học|(nhóm\s+khóa|khoá)\s+học\s+nào/i;
     
     if (categoryQueryRegex.test(lowerCaseText)) {
         // Sử dụng văn bản từ screenshot để phản hồi nhanh và nhất quán.
@@ -367,7 +367,7 @@ function App() {
         return true;
     }
 
-    const registrationQueryRegex = /^(tư\s+vấn\s+)?(đăng\s+ký|register|ghi\s+danh|thủ\s+tục)/i;
+    const registrationQueryRegex = /(đăng\s+ký|register|ghi\s+danh|thủ\s+tục)/i;
     if (registrationQueryRegex.test(lowerCaseText)) {
         const introText = `Để đăng ký, bạn có hai lựa chọn ạ:\n\n1.  **Đăng ký nhanh qua Chatbot (Khuyên dùng):** Tôi sẽ hỏi bạn một vài thông tin cơ bản và giúp bạn gửi thông tin đăng ký trực tiếp đến phòng tuyển sinh. Nếu chưa có đủ hồ sơ, bạn nên chọn cách này.\n\n2.  **Điền Form Online:**\n    *   **Lưu ý quan trọng:** Để hoàn tất form, bạn cần chuẩn bị sẵn các bản scan hoặc ảnh chụp của: **CCCD, Giấy khám sức khỏe, và Sơ yếu lý lịch**.\n    *   Nếu đã có đủ giấy tờ, bạn hãy chọn form tương ứng bên dưới.`;
         const buttons: QuickReplyButton[] = [
